@@ -294,7 +294,7 @@ def leaflet(streets, parcels, mains, valves, hyd, prim, fuses, xf, sub, tx, iso,
         fg = folium.FeatureGroup(name=name, show=show)
         g = w(g)
         g = g[[col for col in g.columns if col == "geometry" or g[col].dtype != object or True]]
-        folium.GeoJson(g.to_json(default=str), style_function=lambda _: style,
+        folium.GeoJson(g.to_json(default=str, drop_id=True), style_function=lambda _: style,
                        tooltip=folium.GeoJsonTooltip(fields=tip) if tip else None,
                        marker=folium.CircleMarker(radius=style.get("radius", 3), fill=True, fill_opacity=.9) if g.geom_type.iloc[0] == "Point" else None).add_to(fg)
         fg.add_to(m)

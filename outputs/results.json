@@ -161,8 +161,8 @@
     "sewer_below_min_slope": [],
     "sewer_flow_loops": [
       [
-        "SM00358",
-        "SM99001"
+        "SM99001",
+        "SM00358"
       ]
     ],
     "sewer_orphan_manholes": [

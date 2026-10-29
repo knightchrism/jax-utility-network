@@ -18,7 +18,7 @@
 | Electric | Primary segments missing phase | 3 | PRI00005, PRI00324, PRI00374 |
 | Sewer | Adverse (negative) slope | 5 | SM00172, SM00192, SM00324, SM00379, SM00518 |
 | Sewer | Below minimum slope for diameter (10 States) | 0 |  |
-| Sewer | Flow loops (directed cycles) | 1 | SM00358->SM99001 |
+| Sewer | Flow loops (directed cycles) | 1 | SM99001->SM00358 |
 | Sewer | Orphan manholes (no connected main) | 3 | MH99000, MH99001, MH99002 |
 | Sewer | Slope > 10% (review for drop manhole; DEM artifacts possible) | 41 |  |
 | Sewer | Manholes deeper than 20 ft (consider extra lift station) | 139 |  |
