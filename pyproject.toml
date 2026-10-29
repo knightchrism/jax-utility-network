@@ -1,4 +1,5 @@
 [project]
+license = "MIT"
 name = "jaxnet"
 version = "0.1.0"
 description = "GeoKnight GIS - Jacksonville utility network demo: water + electric topology, QC, isolation/outage traces"
