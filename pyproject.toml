@@ -4,12 +4,26 @@ version = "0.1.0"
 description = "GeoKnight GIS - Jacksonville utility network demo: water + electric topology, QC, isolation/outage traces"
 readme = "README.md"
 requires-python = ">=3.11"
-dependencies = ["geopandas>=1.0", "shapely>=2.0", "pyogrio", "networkx>=3.2", "requests", "folium", "matplotlib", "pandas", "numpy", "pyproj"]
+dependencies = [
+    "geopandas>=1.0",
+    "shapely>=2.0",
+    "pyogrio",
+    "networkx>=3.2",
+    "requests",
+    "folium",
+    "matplotlib",
+    "pandas",
+    "numpy",
+    "pyproj",
+    "rasterio>=1.4.4",
+    "osmium>=4.3.2",
+]
 
 [project.scripts]
 jaxnet-fetch = "jaxnet.fetch:main"
 jaxnet-build = "jaxnet.build:main"
 jaxnet-analyze = "jaxnet.analyze:main"
+jaxnet-osm = "jaxnet.osm:main"
 
 [build-system]
 requires = ["hatchling"]

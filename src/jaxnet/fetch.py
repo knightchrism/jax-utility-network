@@ -2,7 +2,7 @@
 import json, sys
 import requests
 import geopandas as gpd
-from .config import RAW, AOI, DUVAL, SOURCES, OVERPASS
+from .config import RAW, AOI, AOI2, DUVAL, SOURCES, OVERPASS
 
 UA = {"User-Agent": "geoknight-gis-jax-utility-demo/0.1 (portfolio)"}
 
@@ -74,8 +74,32 @@ def main():
     else:
         counts["osm_substations_duval_bbox"] = None
         print("  Overpass unreachable; OSM power layers skipped (see README).")
+    counts.update(fetch_phase2())
     json.dump(counts, open(RAW / "fetch_counts.json", "w"), indent=2)
     print(json.dumps(counts, indent=2))
+
+
+def fetch_dem(bbox, out, size=(900, 700)):
+    """USGS 3DEP bare-earth DEM (public domain) as GeoTIFF, EPSG:4326, metres."""
+    p = {"bbox": ",".join(map(str, bbox)), "bboxSR": 4326, "imageSR": 4326, "size": f"{size[0]},{size[1]}",
+         "format": "tiff", "pixelType": "F32", "interpolation": "RSP_BilinearInterpolation", "f": "image"}
+    r = requests.get(SOURCES["dem_3dep"] + "/exportImage", params=p, headers=UA, timeout=180)
+    r.raise_for_status()
+    out.write_bytes(r.content)
+
+
+def fetch_phase2():
+    c = {}
+    fetch_dem(AOI, RAW / "dem_3dep_aoi.tif")
+    st = arcgis(SOURCES["septic_phaseout"], DUVAL)
+    st.to_file(RAW / "septic_phaseout_areas.geojson", driver="GeoJSON"); c["septic_phaseout_areas"] = len(st)
+    bb = (AOI2[0] - .004, AOI2[1] - .003, AOI2[2] + .004, AOI2[3] + .003)
+    p2 = arcgis(SOURCES["parcels"], AOI2, "CO_NO=26", "PARCEL_ID,CO_NO,DOR_UC,PHY_ADDR1,JV,NO_RES_UNT")
+    p2.to_file(RAW / "parcels_aoi2.geojson", driver="GeoJSON"); c["parcels_aoi2"] = len(p2)
+    h2 = arcgis(SOURCES["hydrants"], bb, fields="Hydrant_ID,Facility_Owner")
+    h2.to_file(RAW / "hydrants_aoi2_buffered.geojson", driver="GeoJSON"); c["hydrants_aoi2_buffered"] = len(h2)
+    print(c)
+    return c
 
 
 if __name__ == "__main__":

@@ -113,9 +113,47 @@ def outage_trace(prim, fuses, xf, drops):
 
 
 def coverage(parcels, hyd_buf):
-    c = parcels.geometry.representative_point()
-    d = c.apply(lambda p: hyd_buf.distance(p).min())
-    return parcels.assign(dist_hydrant_ft=d.round(0))
+    c = gpd.GeoDataFrame(geometry=parcels.geometry.representative_point(), crs=parcels.crs)
+    j = gpd.sjoin_nearest(c, hyd_buf[["geometry"]], distance_col="d").groupby(level=0).d.min()
+    return parcels.assign(dist_hydrant_ft=j.round(0).values)
+
+
+MIN_SLOPE_PCT = {8: 0.40, 10: 0.28, 12: 0.22, 15: 0.15}
+
+
+def sewer_qc(sm, mh):
+    R = {}
+    R["sewer_adverse_slope"] = sm.loc[sm.slope_pct < 0, "main_id"].tolist()
+    R["sewer_below_min_slope"] = sm.loc[(sm.slope_pct >= 0) & (sm.slope_pct < sm.diameter_in.map(MIN_SLOPE_PCT) - 1e-6), "main_id"].tolist()
+    D = nx.DiGraph()
+    for _, m in sm.iterrows():
+        D.add_edge(m.us_mh, m.ds_mh, main_id=m.main_id)
+    cyc = list(nx.simple_cycles(D, length_bound=6))
+    R["sewer_flow_loops"] = [[D.edges[c[i], c[(i + 1) % len(c)]]["main_id"] for i in range(len(c))] for c in cyc]
+    used = set(sm.us_mh) | set(sm.ds_mh)
+    R["sewer_orphan_manholes"] = mh.loc[~mh.mh_id.isin(used), "mh_id"].tolist()
+    R["sewer_steep_gt10pct_review_drop_mh"] = sm.loc[sm.slope_pct > 10, "main_id"].tolist()
+    R["sewer_deep_manholes_gt20ft"] = mh.loc[mh.depth_ft > 20, "mh_id"].tolist()
+    return R
+
+
+def sewer_traces(sm, mh, slat):
+    shed = slat.groupby("lift_station").parcel_id.nunique().to_dict()
+    D = nx.DiGraph()
+    for _, m in sm[sm.qc_injected == 0].iterrows():
+        D.add_edge(m.us_mh, m.ds_mh, main_id=m.main_id, L=m.length_ft)
+    lsn = mh.loc[mh.is_lift_station == True, ["mh_id", "lift_station"]]  # noqa
+    best = None
+    for _, r in lsn.iterrows():
+        if r.mh_id not in D: continue
+        d = nx.single_source_dijkstra_path_length(D.reverse(copy=False), r.mh_id, weight="L")
+        far = max(d, key=d.get)
+        if best is None or d[far] > best[2]:
+            best = (far, r, d[far])
+    far, r, L = best
+    path = nx.shortest_path(D, far, r.mh_id, weight="L")
+    pm = [D.edges[a, b]["main_id"] for a, b in zip(path[:-1], path[1:])]
+    return dict(sewershed_parcels=shed, downstream_trace=dict(start_mh=far, lift_station=r.lift_station, mains=pm, length_ft=round(L, 0), manholes=len(path)))
 
 
 def main():
@@ -125,7 +163,14 @@ def main():
     parcels, hyd, streets, tx = L("real_parcels_fdor"), L("real_hydrants_jea"), L("real_streets_tiger"), L("real_transmission_hifld")
     hyd_buf = gpd.read_file(RAW / "hydrants_aoi_buffered.geojson").to_crs(CRS_FT)
 
+    sm, smh, sls, slat = L("synthetic_sewer_mains"), L("synthetic_sewer_manholes"), L("synthetic_lift_stations"), L("synthetic_sewer_laterals")
+    septic, osm_l, osm_s = L("real_septic_phaseout_coj"), L("real_osm_power_lines"), L("real_osm_power_substations")
+    p2 = gpd.read_file(RAW / "parcels_aoi2.geojson").to_crs(CRS_FT).drop_duplicates("PARCEL_ID").reset_index(drop=True)
+    h2 = gpd.read_file(RAW / "hydrants_aoi2_buffered.geojson").to_crs(CRS_FT)
+    cov2 = coverage(p2, h2); gaps2 = cov2[cov2.dist_hydrant_ft > 500]
+    SR = sewer_qc(sm, smh); st = sewer_traces(sm, smh, slat)
     R = qc(mains, valves, svc, prim, xf, sub)
+    R.update(SR)
     iso = isolation_trace(mains, valves, svc)
     out = outage_trace(prim, fuses, xf, drops)
     cov = coverage(parcels, hyd_buf)
@@ -134,22 +179,31 @@ def main():
                    isolation=dict(break_main=iso["break_main"], mains=len(iso["isolated_mains"]), valves=len(iso["valves_to_close"]), parcels=len(iso["affected_parcels"])),
                    outage=dict(fuse=out["fuse"], feeder=out["feeder"], transformers=len(out["transformers"]), customers=len(out["affected_customers"]), feeder_customers=out["feeder_customers"]),
                    hydrant=dict(parcels=len(cov), gt500ft=len(gaps), pct=round(100 * len(gaps) / len(cov), 1), real_hydrants_aoi=len(hyd)),
+                   hydrant_northside=dict(parcels=len(cov2), gt500ft=len(gaps2), pct=round(100 * len(gaps2) / len(cov2), 1), real_hydrants_buffered=len(h2),
+                                          gt1000ft=int((cov2.dist_hydrant_ft > 1000).sum()), max_ft=float(cov2.dist_hydrant_ft.max())),
+                   sewer=dict(mains=len(sm), manholes=len(smh), lift_stations=len(sls), laterals=len(slat), sewershed_parcels=st["sewershed_parcels"],
+                              downstream_trace={k: (len(v) if isinstance(v, list) else v) for k, v in st["downstream_trace"].items()}),
+                   osm_power_duval=dict(lines=len(osm_l), substations=len(osm_s), poles_towers_xfmr=len(L("real_osm_power_poles_towers"))),
+                   septic_phaseout_areas=len(septic),
                    counts=dict(mains=len(mains), valves=len(valves), services=len(svc), meters=len(met), primary=len(prim), fuses=len(fuses), transformers=len(xf), drops=len(drops)))
-    json.dump(dict(summary=summary, qc=R, isolation=iso, outage=out), open(OUT / "results.json", "w"), indent=2, default=str)
+    json.dump(dict(summary=summary, qc=R, isolation=iso, outage=out, sewer=st), open(OUT / "results.json", "w"), indent=2, default=str)
 
     # analysis layers to gpkg
     mains.assign(isolated=mains.main_id.isin(iso["isolated_mains"])).query("isolated").to_file(GPKG, layer="trace_valve_isolation_mains")
     cov.to_file(GPKG, layer="analysis_hydrant_coverage")
+    cov2.to_file(GPKG, layer="analysis_hydrant_coverage_northside")
+    sm[sm.main_id.isin(st["downstream_trace"]["mains"])].to_file(GPKG, layer="trace_sewer_downstream")
     parcels[parcels.PARCEL_ID.isin(out["affected_customers"])].to_file(GPKG, layer="trace_outage_parcels")
     parcels[parcels.PARCEL_ID.isin(iso["affected_parcels"])].to_file(GPKG, layer="trace_isolation_parcels")
 
-    write_report(summary, R, iso, out)
-    png(streets, parcels, mains, valves, hyd, prim, xf, sub, iso, out, gaps)
-    leaflet(streets, parcels, mains, valves, hyd, prim, fuses, xf, sub, tx, iso, out, gaps)
+    X = dict(sm=sm, smh=smh, sls=sls, slat=slat, st=st, septic=septic, osm_l=osm_l, osm_s=osm_s, p2=cov2, gaps2=gaps2, h2=h2)
+    write_report(summary, R, iso, out, X)
+    png(streets, parcels, mains, valves, hyd, prim, xf, sub, iso, out, gaps, X)
+    leaflet(streets, parcels, mains, valves, hyd, prim, fuses, xf, sub, tx, iso, out, gaps, X)
     print(json.dumps(summary, indent=2))
 
 
-def write_report(S, R, iso, out):
+def write_report(S, R, iso, out, X):
     q = S["qc"]
     rows = [
         ("Water", "Disconnected main islands (components beyond the main network)", q["water_components"] - 1, ", ".join(R["water_disconnected_mains"])),
@@ -165,6 +219,14 @@ def write_report(S, R, iso, out):
         ("Electric", "Transformers missing voltage", q["elec_xfmr_missing_voltage"], ", ".join(R["elec_xfmr_missing_voltage"])),
         ("Electric", "Primary segments missing phase", q["elec_primary_missing_phase"], ", ".join(R["elec_primary_missing_phase"])),
     ]
+    rows += [
+        ("Sewer", "Adverse (negative) slope", q["sewer_adverse_slope"], ", ".join(R["sewer_adverse_slope"])),
+        ("Sewer", "Below minimum slope for diameter (10 States)", q["sewer_below_min_slope"], ", ".join(R["sewer_below_min_slope"][:15])),
+        ("Sewer", "Flow loops (directed cycles)", q["sewer_flow_loops"], "; ".join("->".join(c) for c in R["sewer_flow_loops"])),
+        ("Sewer", "Orphan manholes (no connected main)", q["sewer_orphan_manholes"], ", ".join(R["sewer_orphan_manholes"])),
+        ("Sewer", "Slope > 10% (review for drop manhole; DEM artifacts possible)", q["sewer_steep_gt10pct_review_drop_mh"], ""),
+        ("Sewer", "Manholes deeper than 20 ft (consider extra lift station)", q["sewer_deep_manholes_gt20ft"], ""),
+    ]
     md = ["# GeoKnight GIS | Topology QC Report: Avondale/Riverside, Jacksonville FL", "",
           "> **SYNTHETIC NETWORK.** Water and distribution-electric assets are synthetic, generated on real Census TIGER streets and real FDOR parcels. "
           "Some defects were planted on purpose (`qc_injected=1`) to check that the QC catches them. Hydrant locations are real (City of Jacksonville / JEA service).", "",
@@ -174,36 +236,55 @@ def write_report(S, R, iso, out):
            f"- Isolated mains: {len(iso['isolated_mains'])}; **affected parcels: {len(iso['affected_parcels'])}**", "",
            "## Fuse outage trace", f"- Fuse **{out['fuse']}** on {out['feeder']} operates: {len(out['transformers'])} transformers, **{len(out['affected_customers'])} customers out**",
            f"- Customers per feeder (breaker-level outage): {out['feeder_customers']}", "",
-           "## Hydrant coverage (real hydrants)", f"- {S['hydrant']['gt500ft']} of {S['hydrant']['parcels']} parcels ({S['hydrant']['pct']}%) are > 500 ft (straight line) from the nearest hydrant."]
+           "## Hydrant coverage (real hydrants)", f"- {S['hydrant']['gt500ft']} of {S['hydrant']['parcels']} parcels ({S['hydrant']['pct']}%) are > 500 ft (straight line) from the nearest hydrant.",
+           "", "## Hydrant coverage: Northside study area (real hydrants, real parcels)",
+           f"- **{S['hydrant_northside']['gt500ft']} of {S['hydrant_northside']['parcels']} parcels ({S['hydrant_northside']['pct']}%) are > 500 ft** from a hydrant; {S['hydrant_northside']['gt1000ft']} are > 1,000 ft (max {S['hydrant_northside']['max_ft']:.0f} ft).",
+           "", "## Sewer traces (synthetic)", f"- Parcels draining to each lift station: {S['sewer']['sewershed_parcels']}",
+           f"- Longest downstream trace: {X['st']['downstream_trace']['start_mh']} to {X['st']['downstream_trace']['lift_station']}, {X['st']['downstream_trace']['manholes']} manholes, {X['st']['downstream_trace']['length_ft']:.0f} ft"]
     (OUT / "qc_report.md").write_text("\n".join(md) + "\n")
 
 
-def png(streets, parcels, mains, valves, hyd, prim, xf, sub, iso, out, gaps):
-    fig, axs = plt.subplots(1, 2, figsize=(18, 9), facecolor="#0b1220")
+def png(streets, parcels, mains, valves, hyd, prim, xf, sub, iso, out, gaps, X):
+    fig, axs = plt.subplots(2, 2, figsize=(18, 18), facecolor="#0b1220")
+    axs = axs.ravel()
     for ax in axs:
         ax.set_facecolor("#0b1220"); ax.set_axis_off()
+    for ax in axs[:3]:
         parcels.plot(ax=ax, color="#1b2638", edgecolor="#26344d", lw=.2)
     ax = axs[0]
     mains.plot(ax=ax, color="#38bdf8", lw=.8)
     mains[mains.main_id.isin(iso["isolated_mains"])].plot(ax=ax, color="#f43f5e", lw=3)
-    parcels[parcels.PARCEL_ID.isin(iso["affected_parcels"])].plot(ax=ax, color="#f43f5e", alpha=.5)
-    if len(gaps): gaps.plot(ax=ax, color="#f59e0b", alpha=.6)
-    hyd.plot(ax=ax, color="#fde047", markersize=6)
-    valves.plot(ax=ax, color="white", markersize=2)
-    ax.set_title("WATER (synthetic mains, real hydrants)\nred = valve isolation, amber = parcels >500 ft from hydrant", color="white")
+    parcels[parcels.PARCEL_ID.isin(iso["affected_parcels"])].plot(ax=ax, color="#f43f5e", alpha=.6)
+    hyd.plot(ax=ax, color="#fde047", markersize=6); valves.plot(ax=ax, color="white", markersize=2)
+    ax.set_title("WATER: synthetic mains, real hydrants\nred = main-break valve isolation", color="white")
     ax = axs[1]
     cols = {"FDR-101": "#a78bfa", "FDR-102": "#34d399", "FDR-103": "#fb923c"}
     for f, g in prim.groupby("feeder_id"):
         g.plot(ax=ax, color=cols.get(f, "w"), lw=1.5)
     parcels[parcels.PARCEL_ID.isin(out["affected_customers"])].plot(ax=ax, color="#f43f5e", alpha=.55)
-    xf.plot(ax=ax, color="white", markersize=3)
-    sub.plot(ax=ax, color="#facc15", markersize=200, marker="s")
-    ax.set_title(f"ELECTRIC (synthetic distribution)\nfeeders FDR-101/102/103, red = {out['fuse']} outage", color="white")
-    fig.suptitle("GeoKnight GIS  |  Jacksonville Utility Network Demo  |  Avondale / Riverside  (SYNTHETIC assets on real streets and parcels)", color="white", fontsize=15)
-    plt.tight_layout(); fig.savefig(OUT / "jax_utility_network_map.png", dpi=140, facecolor=fig.get_facecolor()); plt.close(fig)
+    xf.plot(ax=ax, color="white", markersize=3); sub.plot(ax=ax, color="#facc15", markersize=200, marker="s")
+    ax.set_title(f"ELECTRIC: synthetic distribution (3 feeders)\nred = {out['fuse']} fuse outage", color="white")
+    ax = axs[2]
+    lsc = {"LS-1": "#22d3ee", "LS-2": "#a3e635", "LS-3": "#f472b6"}
+    shed = X["slat"].set_index("parcel_id").lift_station
+    for k, c in lsc.items():
+        parcels[parcels.PARCEL_ID.map(shed) == k].plot(ax=ax, color=c, alpha=.25)
+        X["sm"][X["sm"].lift_station == k].plot(ax=ax, color=c, lw=1.2)
+    X["sm"][X["sm"].main_id.isin(X["st"]["downstream_trace"]["mains"])].plot(ax=ax, color="white", lw=3.5)
+    X["sls"].plot(ax=ax, color="#facc15", markersize=220, marker="^")
+    ax.set_title("SEWER: synthetic gravity network on 3DEP DEM\nsewersheds by lift station, white = longest downstream trace", color="white")
+    ax = axs[3]
+    p2 = X["p2"]
+    p2.plot(ax=ax, column=p2.dist_hydrant_ft.clip(upper=1500), cmap="magma_r", edgecolor="#26344d", lw=.2)
+    X["gaps2"].boundary.plot(ax=ax, color="#f43f5e", lw=.6)
+    X["h2"].clip(p2.total_bounds).plot(ax=ax, color="#fde047", markersize=8)
+    n, t = len(X["gaps2"]), len(p2)
+    ax.set_title(f"NORTHSIDE: real hydrant coverage\n{n} of {t} parcels ({100*n/t:.1f}%) > 500 ft from a hydrant (outlined red)", color="white")
+    fig.suptitle("GeoKnight GIS  |  Jacksonville Utility Network Demo\nSYNTHETIC water, sewer, and electric networks on real streets and parcels; real hydrants", color="white", fontsize=17)
+    plt.tight_layout(); fig.savefig(OUT / "jax_utility_network_map.png", dpi=110, facecolor=fig.get_facecolor()); plt.close(fig)
 
 
-def leaflet(streets, parcels, mains, valves, hyd, prim, fuses, xf, sub, tx, iso, out, gaps):
+def leaflet(streets, parcels, mains, valves, hyd, prim, fuses, xf, sub, tx, iso, out, gaps, X):
     w = lambda g: g.to_crs(4326)  # noqa
     c = w(parcels).union_all().centroid
     m = folium.Map([c.y, c.x], zoom_start=15, tiles="OpenStreetMap", control_scale=True)
@@ -232,10 +313,20 @@ def leaflet(streets, parcels, mains, valves, hyd, prim, fuses, xf, sub, tx, iso,
     add(fuses, "SYNTHETIC fuses", {"color": "#ef4444", "radius": 3}, show=False, tip=["fuse_id", "feeder_id", "amps"])
     add(parcels[parcels.PARCEL_ID.isin(out["affected_customers"])], f"Outage: {out['fuse']} customers", {"color": "#c084fc", "fillOpacity": .45, "weight": .5}, show=False, tip=["PARCEL_ID", "PHY_ADDR1"])
     add(sub, "SYNTHETIC substation", {"color": "#facc15", "radius": 9}, tip=["sub_id", "name", "tie_hifld_id"])
+    add(X["sm"], "SYNTHETIC sewer mains", {"color": "#a3e635", "weight": 2}, show=False, tip=["main_id", "diameter_in", "slope_pct", "us_invert_ft", "ds_invert_ft", "lift_station", "qc_injected"])
+    add(X["smh"], "SYNTHETIC manholes", {"color": "#d9f99d", "radius": 2}, show=False, tip=["mh_id", "rim_ft", "invert_ft", "depth_ft", "lift_station"])
+    add(X["sm"][X["sm"].main_id.isin(X["st"]["downstream_trace"]["mains"])], "Sewer downstream trace", {"color": "#ffffff", "weight": 6}, show=False)
+    add(X["sls"], "SYNTHETIC lift stations", {"color": "#facc15", "radius": 8}, tip=["ls_id", "name"])
+    add(X["septic"], "Real septic phase-out areas (COJ)", {"color": "#f97316", "weight": 2, "fillOpacity": .08}, show=False)
+    add(X["osm_l"], "Real OSM power lines (Duval)", {"color": "#eab308", "weight": 1.5}, show=False, tip=["osm_id", "power", "voltage", "operator"])
+    add(X["osm_s"], "Real OSM substations (Duval)", {"color": "#ef4444", "weight": 1, "fillOpacity": .4}, show=False, tip=["osm_id", "name", "operator", "voltage"])
+    add(X["p2"], "Northside: hydrant distance (real)", {"color": "#475569", "weight": .3, "fillOpacity": .05}, show=False, tip=["PARCEL_ID", "PHY_ADDR1", "dist_hydrant_ft"])
+    add(X["gaps2"], "Northside: parcels > 500 ft from hydrant", {"color": "#f43f5e", "weight": .5, "fillOpacity": .5}, tip=["PARCEL_ID", "PHY_ADDR1", "dist_hydrant_ft"])
+    add(X["h2"], "Northside: real hydrants", {"color": "#fde047", "radius": 3}, tip=["Hydrant_ID", "Facility_Owner"])
     folium.LayerControl(collapsed=False).add_to(m)
     m.get_root().html.add_child(folium.Element(
         "<div style='position:fixed;top:10px;left:50px;z-index:9999;background:#0b1220cc;color:#e2e8f0;padding:8px 14px;border-radius:6px;font-family:sans-serif'>"
-        "<b style='color:#38bdf8'>GeoKnight GIS</b> &middot; Jacksonville Utility Network Demo<br><small>Water mains, valves, services, and the electric distribution network are <b>SYNTHETIC</b>. Streets (TIGER), parcels (FDOR), hydrants (COJ/JEA), and transmission (HIFLD) are real.</small></div>"))
+        "<b style='color:#38bdf8'>GeoKnight GIS</b> &middot; Jacksonville Utility Network Demo<br><small>Water, sewer, and electric distribution networks are <b>SYNTHETIC</b>. Streets (TIGER), parcels (FDOR), hydrants (COJ/JEA), transmission (HIFLD), OSM power, septic phase-out areas, and DEM (3DEP) are real.</small></div>"))
     m.save(WEB / "index.html")
 
 

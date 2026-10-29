@@ -9,8 +9,10 @@ Counts come from live ArcGIS REST `returnCountOnly` queries over the Duval bbox 
 | US Census TIGERweb | `tigerweb.geo.census.gov/.../TIGERweb/Transportation/MapServer/8` (local roads) and `/6` (secondary roads) | Road centerlines | Public domain | Yes | 29,024 local segments (bbox) | Yes, real |
 | HIFLD transmission lines | `services1.arcgis.com/Hp6G80Pky0om7QvQ/.../Electric_Power_Transmission_Lines/FeatureServer/0` | Lines with owner, voltage, SUB_1/SUB_2 | HIFLD Open (public) | Yes | 132 intersecting the Duval bbox | Yes, real |
 | HIFLD electric substations | `.../Electric_Substations/FeatureServer` | n/a | n/a | **No.** Returns "Invalid URL"; the public substation layer is no longer at the HIFLD Open org | n/a | No |
+| OpenStreetMap through Geofabrik | `download.geofabrik.de/north-america/us/florida-latest.osm.pbf` (660 MB) | power line/minor_line/cable/substation/pole/tower/transformer | ODbL | ✅ parsed with pyosmium and clipped to the TIGER Duval boundary | 1,712 lines, 117 substations, 11,122 poles/towers/transformers | Yes, real |
+| USGS 3DEP DEM | `elevation.nationalmap.gov/arcgis/rest/services/3DEPElevation/ImageServer` exportImage | bare-earth elevation | Public domain | ✅ | 900×700 GeoTIFF for the study area | Yes (sewer rims) |
 | OpenStreetMap via Overpass | overpass-api.de, kumi.systems, mail.ru mirrors | power=substation/line/pole, emergency=fire_hydrant | ODbL | **Blocked from this box** (SSL EOF, timeouts, 504) | not measured | No. Fetch code tries it and skips cleanly; Geofabrik Florida PBF is the fallback |
-| COJ `maps.coj.net/coj/rest/services` (other folders) | Utilities, SepticTanks/STPO_Public, etc. | "Utilities" folder holds only geometry and print tools; STPO has septic phase-out areas | Public | Yes | not counted | Not yet. STPO is a good sewer-context layer |
+| COJ `maps.coj.net/coj/rest/services` (other folders) | Utilities, SepticTanks/STPO_Public, etc. | "Utilities" folder holds only geometry and print tools; STPO has septic phase-out areas | Public | Yes | not counted | STPO phase-out areas: 4 polygons, now used |
 | JEA GIS (`gis.jea.com`) | n/a | n/a | n/a | **No response** (connection failed) | n/a | No |
 | FDEP (`ca.dep.state.fl.us/arcgis/rest/services`) | reachable (HTTP 200) | Not browsed in depth. Candidates: wastewater facilities, reuse | Public | Probably | not counted | Future |
 | FEMA NFHL (`hazards.fema.gov/arcgis/rest/services`) | reachable (HTTP 200) | Flood zones | Public domain | Probably | not counted | Future (asset flood exposure) |
@@ -18,4 +20,4 @@ Counts come from live ArcGIS REST `returnCountOnly` queries over the Duval bbox 
 
 ## Gaps
 - **No public JEA water, sewer, reclaimed, or electric-distribution pipe and wire networks.** These are treated as critical-infrastructure data and are not published. Every main, valve, service, primary, transformer, and drop in this repo is therefore **synthetic**.
-- No public substation points (HIFLD layer gone, OSM blocked from here). The substation in this repo is synthetic and tied to the nearest real HIFLD line.
+- Substation footprints now come from OSM through Geofabrik (117 in Duval). The modeled distribution substation is still synthetic and tied to the nearest real HIFLD line.

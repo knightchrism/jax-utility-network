@@ -187,6 +187,10 @@ def main():
     streets = node_streets(roads)
     mains, valves, svc, met, lat = build_water(streets, parcels, hyd)
     sub, prim, fuses, xf, drops = build_electric(streets, parcels, tx, clip)
+    from .sewer import build_sewer
+    smains, smh, sls, slat = build_sewer(streets, parcels, rng)
+    septic = gpd.read_file(RAW / "septic_phaseout_areas.geojson").to_crs(CRS_FT)
+    osm = gpd.read_file(RAW / "osm_power_duval.geojson").to_crs(CRS_FT)
     layers = {
         "real_streets_tiger": streets, "real_parcels_fdor": parcels[["PARCEL_ID", "DOR_UC", "PHY_ADDR1", "geometry"]],
         "real_hydrants_jea": hyd, "real_transmission_hifld": tx,
@@ -194,6 +198,11 @@ def main():
         "synthetic_water_meters": met, "synthetic_hydrant_laterals": lat,
         "synthetic_substation": sub, "synthetic_primary_conductor": prim, "synthetic_fuses": fuses,
         "synthetic_transformers": xf, "synthetic_service_drops": drops,
+        "synthetic_sewer_mains": smains, "synthetic_sewer_manholes": smh, "synthetic_lift_stations": sls, "synthetic_sewer_laterals": slat,
+        "real_septic_phaseout_coj": septic,
+        "real_osm_power_lines": osm[osm.power.isin(["line", "minor_line", "cable"])],
+        "real_osm_power_substations": osm[osm.power == "substation"],
+        "real_osm_power_poles_towers": osm[osm.power.isin(["pole", "tower", "transformer"])],
     }
     gpkg = PROC / "jax_utility_network.gpkg"
     gpkg.unlink(missing_ok=True)

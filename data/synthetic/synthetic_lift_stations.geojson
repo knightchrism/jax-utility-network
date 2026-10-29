@@ -1,0 +1,10 @@
+{
+"type": "FeatureCollection",
+"name": "synthetic_lift_stations",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "ls_id": "LS-3", "name": "Synthetic Lift Station LS-3", "rim_ft": 0.0, "invert_ft": -25.66 }, "geometry": { "type": "Point", "coordinates": [ -81.6959999885309, 30.304638108567804 ] } },
+{ "type": "Feature", "properties": { "ls_id": "LS-1", "name": "Synthetic Lift Station LS-1", "rim_ft": 0.0, "invert_ft": -20.88 }, "geometry": { "type": "Point", "coordinates": [ -81.716000093999369, 30.305719650804868 ] } },
+{ "type": "Feature", "properties": { "ls_id": "LS-2", "name": "Synthetic Lift Station LS-2", "rim_ft": 11.08, "invert_ft": -19.29 }, "geometry": { "type": "Point", "coordinates": [ -81.708401408064432, 30.299175591421189 ] } }
+]
+}

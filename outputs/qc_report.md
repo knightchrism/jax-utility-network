@@ -16,6 +16,12 @@
 | Electric | Transformers missing phase | 2 | XF00257, XF00299 |
 | Electric | Transformers missing voltage | 2 | XF00293, XF00426 |
 | Electric | Primary segments missing phase | 3 | PRI00005, PRI00324, PRI00374 |
+| Sewer | Adverse (negative) slope | 5 | SM00172, SM00192, SM00324, SM00379, SM00518 |
+| Sewer | Below minimum slope for diameter (10 States) | 0 |  |
+| Sewer | Flow loops (directed cycles) | 1 | SM00358->SM99001 |
+| Sewer | Orphan manholes (no connected main) | 3 | MH99000, MH99001, MH99002 |
+| Sewer | Slope > 10% (review for drop manhole; DEM artifacts possible) | 41 |  |
+| Sewer | Manholes deeper than 20 ft (consider extra lift station) | 139 |  |
 
 ## Main-break valve isolation
 - Break on **WM00645**: close **4 valves** (WV00373, WV00374, WV00424, WV00425)
@@ -27,3 +33,10 @@
 
 ## Hydrant coverage (real hydrants)
 - 0 of 2789 parcels (0.0%) are > 500 ft (straight line) from the nearest hydrant.
+
+## Hydrant coverage: Northside study area (real hydrants, real parcels)
+- **342 of 2671 parcels (12.8%) are > 500 ft** from a hydrant; 107 are > 1,000 ft (max 2380 ft).
+
+## Sewer traces (synthetic)
+- Parcels draining to each lift station: {'LS-1': 337, 'LS-2': 1823, 'LS-3': 629}
+- Longest downstream trace: MH00160 to LS-2, 33 manholes, 7543 ft
