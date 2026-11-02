@@ -211,6 +211,22 @@ def main():
         if name.startswith("synthetic_"):
             g.to_crs(4326).to_file(SYN / f"{name}.geojson", driver="GeoJSON")
         print(f"{name:32s} {len(g):6d}")
+    trust(layers)
+
+
+def trust(layers):
+    """geoknight-trust: counts-only checks on every layer written to the GeoPackage."""
+    from geoknight_trust import LayerCheck
+    from . import gk_trust_hook as th
+    checks = [LayerCheck(name, g, expected_crs=None, max_invalid_geometries=0) for name, g in layers.items()]
+    return th.run(PROC.parent.parent / "trust", "jax-utility-network build", checks)
+
+
+def trust_existing():
+    """Run the checks on the GeoPackage already built (no fetching, no rebuild)."""
+    import pyogrio
+    gpkg = PROC / "jax_utility_network.gpkg"
+    return trust({n: gpd.read_file(gpkg, layer=n) for n, _ in pyogrio.list_layers(gpkg)})
 
 
 if __name__ == "__main__":

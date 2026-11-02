@@ -1,0 +1,1239 @@
+{
+  "load": "jax-utility-network build",
+  "generated_at": "2026-11-02T15:46:16-05:00",
+  "overall": "PASS",
+  "layers": [
+    {
+      "layer": "real_streets_tiger",
+      "rows": 569,
+      "crs": "EPSG:2236",
+      "status": "PASS",
+      "checks": [
+        {
+          "check": "row_count_vs_source",
+          "status": "SKIP",
+          "rows": 569,
+          "source_count": null,
+          "note": "no source count supplied (source exposes none, or not queried offline)"
+        },
+        {
+          "check": "empty_geometry",
+          "status": "PASS",
+          "missing": 0,
+          "empty": 0,
+          "threshold": 0
+        },
+        {
+          "check": "invalid_geometry",
+          "status": "PASS",
+          "invalid": 0,
+          "threshold": 0
+        },
+        {
+          "check": "crs",
+          "status": "PASS",
+          "crs": "EPSG:2236"
+        },
+        {
+          "check": "duplicate_ids",
+          "status": "SKIP",
+          "note": "no id field configured"
+        },
+        {
+          "check": "key_field_null_rate",
+          "status": "SKIP",
+          "threshold": 0.0,
+          "fields": {}
+        }
+      ]
+    },
+    {
+      "layer": "real_parcels_fdor",
+      "rows": 2789,
+      "crs": "EPSG:2236",
+      "status": "PASS",
+      "checks": [
+        {
+          "check": "row_count_vs_source",
+          "status": "SKIP",
+          "rows": 2789,
+          "source_count": null,
+          "note": "no source count supplied (source exposes none, or not queried offline)"
+        },
+        {
+          "check": "empty_geometry",
+          "status": "PASS",
+          "missing": 0,
+          "empty": 0,
+          "threshold": 0
+        },
+        {
+          "check": "invalid_geometry",
+          "status": "PASS",
+          "invalid": 0,
+          "threshold": 0
+        },
+        {
+          "check": "crs",
+          "status": "PASS",
+          "crs": "EPSG:2236"
+        },
+        {
+          "check": "duplicate_ids",
+          "status": "SKIP",
+          "note": "no id field configured"
+        },
+        {
+          "check": "key_field_null_rate",
+          "status": "SKIP",
+          "threshold": 0.0,
+          "fields": {}
+        }
+      ]
+    },
+    {
+      "layer": "real_hydrants_jea",
+      "rows": 206,
+      "crs": "EPSG:2236",
+      "status": "PASS",
+      "checks": [
+        {
+          "check": "row_count_vs_source",
+          "status": "SKIP",
+          "rows": 206,
+          "source_count": null,
+          "note": "no source count supplied (source exposes none, or not queried offline)"
+        },
+        {
+          "check": "empty_geometry",
+          "status": "PASS",
+          "missing": 0,
+          "empty": 0,
+          "threshold": 0
+        },
+        {
+          "check": "invalid_geometry",
+          "status": "PASS",
+          "invalid": 0,
+          "threshold": 0
+        },
+        {
+          "check": "crs",
+          "status": "PASS",
+          "crs": "EPSG:2236"
+        },
+        {
+          "check": "duplicate_ids",
+          "status": "SKIP",
+          "note": "no id field configured"
+        },
+        {
+          "check": "key_field_null_rate",
+          "status": "SKIP",
+          "threshold": 0.0,
+          "fields": {}
+        }
+      ]
+    },
+    {
+      "layer": "real_transmission_hifld",
+      "rows": 132,
+      "crs": "EPSG:2236",
+      "status": "PASS",
+      "checks": [
+        {
+          "check": "row_count_vs_source",
+          "status": "SKIP",
+          "rows": 132,
+          "source_count": null,
+          "note": "no source count supplied (source exposes none, or not queried offline)"
+        },
+        {
+          "check": "empty_geometry",
+          "status": "PASS",
+          "missing": 0,
+          "empty": 0,
+          "threshold": 0
+        },
+        {
+          "check": "invalid_geometry",
+          "status": "PASS",
+          "invalid": 0,
+          "threshold": 0
+        },
+        {
+          "check": "crs",
+          "status": "PASS",
+          "crs": "EPSG:2236"
+        },
+        {
+          "check": "duplicate_ids",
+          "status": "SKIP",
+          "note": "no id field configured"
+        },
+        {
+          "check": "key_field_null_rate",
+          "status": "SKIP",
+          "threshold": 0.0,
+          "fields": {}
+        }
+      ]
+    },
+    {
+      "layer": "synthetic_water_mains",
+      "rows": 1418,
+      "crs": "EPSG:2236",
+      "status": "PASS",
+      "checks": [
+        {
+          "check": "row_count_vs_source",
+          "status": "SKIP",
+          "rows": 1418,
+          "source_count": null,
+          "note": "no source count supplied (source exposes none, or not queried offline)"
+        },
+        {
+          "check": "empty_geometry",
+          "status": "PASS",
+          "missing": 0,
+          "empty": 0,
+          "threshold": 0
+        },
+        {
+          "check": "invalid_geometry",
+          "status": "PASS",
+          "invalid": 0,
+          "threshold": 0
+        },
+        {
+          "check": "crs",
+          "status": "PASS",
+          "crs": "EPSG:2236"
+        },
+        {
+          "check": "duplicate_ids",
+          "status": "SKIP",
+          "note": "no id field configured"
+        },
+        {
+          "check": "key_field_null_rate",
+          "status": "SKIP",
+          "threshold": 0.0,
+          "fields": {}
+        }
+      ]
+    },
+    {
+      "layer": "synthetic_water_valves",
+      "rows": 848,
+      "crs": "EPSG:2236",
+      "status": "PASS",
+      "checks": [
+        {
+          "check": "row_count_vs_source",
+          "status": "SKIP",
+          "rows": 848,
+          "source_count": null,
+          "note": "no source count supplied (source exposes none, or not queried offline)"
+        },
+        {
+          "check": "empty_geometry",
+          "status": "PASS",
+          "missing": 0,
+          "empty": 0,
+          "threshold": 0
+        },
+        {
+          "check": "invalid_geometry",
+          "status": "PASS",
+          "invalid": 0,
+          "threshold": 0
+        },
+        {
+          "check": "crs",
+          "status": "PASS",
+          "crs": "EPSG:2236"
+        },
+        {
+          "check": "duplicate_ids",
+          "status": "SKIP",
+          "note": "no id field configured"
+        },
+        {
+          "check": "key_field_null_rate",
+          "status": "SKIP",
+          "threshold": 0.0,
+          "fields": {}
+        }
+      ]
+    },
+    {
+      "layer": "synthetic_water_services",
+      "rows": 2789,
+      "crs": "EPSG:2236",
+      "status": "PASS",
+      "checks": [
+        {
+          "check": "row_count_vs_source",
+          "status": "SKIP",
+          "rows": 2789,
+          "source_count": null,
+          "note": "no source count supplied (source exposes none, or not queried offline)"
+        },
+        {
+          "check": "empty_geometry",
+          "status": "PASS",
+          "missing": 0,
+          "empty": 0,
+          "threshold": 0
+        },
+        {
+          "check": "invalid_geometry",
+          "status": "PASS",
+          "invalid": 0,
+          "threshold": 0
+        },
+        {
+          "check": "crs",
+          "status": "PASS",
+          "crs": "EPSG:2236"
+        },
+        {
+          "check": "duplicate_ids",
+          "status": "SKIP",
+          "note": "no id field configured"
+        },
+        {
+          "check": "key_field_null_rate",
+          "status": "SKIP",
+          "threshold": 0.0,
+          "fields": {}
+        }
+      ]
+    },
+    {
+      "layer": "synthetic_water_meters",
+      "rows": 2789,
+      "crs": "EPSG:2236",
+      "status": "PASS",
+      "checks": [
+        {
+          "check": "row_count_vs_source",
+          "status": "SKIP",
+          "rows": 2789,
+          "source_count": null,
+          "note": "no source count supplied (source exposes none, or not queried offline)"
+        },
+        {
+          "check": "empty_geometry",
+          "status": "PASS",
+          "missing": 0,
+          "empty": 0,
+          "threshold": 0
+        },
+        {
+          "check": "invalid_geometry",
+          "status": "PASS",
+          "invalid": 0,
+          "threshold": 0
+        },
+        {
+          "check": "crs",
+          "status": "PASS",
+          "crs": "EPSG:2236"
+        },
+        {
+          "check": "duplicate_ids",
+          "status": "SKIP",
+          "note": "no id field configured"
+        },
+        {
+          "check": "key_field_null_rate",
+          "status": "SKIP",
+          "threshold": 0.0,
+          "fields": {}
+        }
+      ]
+    },
+    {
+      "layer": "synthetic_hydrant_laterals",
+      "rows": 206,
+      "crs": "EPSG:2236",
+      "status": "PASS",
+      "checks": [
+        {
+          "check": "row_count_vs_source",
+          "status": "SKIP",
+          "rows": 206,
+          "source_count": null,
+          "note": "no source count supplied (source exposes none, or not queried offline)"
+        },
+        {
+          "check": "empty_geometry",
+          "status": "PASS",
+          "missing": 0,
+          "empty": 0,
+          "threshold": 0
+        },
+        {
+          "check": "invalid_geometry",
+          "status": "PASS",
+          "invalid": 0,
+          "threshold": 0
+        },
+        {
+          "check": "crs",
+          "status": "PASS",
+          "crs": "EPSG:2236"
+        },
+        {
+          "check": "duplicate_ids",
+          "status": "SKIP",
+          "note": "no id field configured"
+        },
+        {
+          "check": "key_field_null_rate",
+          "status": "SKIP",
+          "threshold": 0.0,
+          "fields": {}
+        }
+      ]
+    },
+    {
+      "layer": "synthetic_substation",
+      "rows": 1,
+      "crs": "EPSG:2236",
+      "status": "PASS",
+      "checks": [
+        {
+          "check": "row_count_vs_source",
+          "status": "SKIP",
+          "rows": 1,
+          "source_count": null,
+          "note": "no source count supplied (source exposes none, or not queried offline)"
+        },
+        {
+          "check": "empty_geometry",
+          "status": "PASS",
+          "missing": 0,
+          "empty": 0,
+          "threshold": 0
+        },
+        {
+          "check": "invalid_geometry",
+          "status": "PASS",
+          "invalid": 0,
+          "threshold": 0
+        },
+        {
+          "check": "crs",
+          "status": "PASS",
+          "crs": "EPSG:2236"
+        },
+        {
+          "check": "duplicate_ids",
+          "status": "SKIP",
+          "note": "no id field configured"
+        },
+        {
+          "check": "key_field_null_rate",
+          "status": "SKIP",
+          "threshold": 0.0,
+          "fields": {}
+        }
+      ]
+    },
+    {
+      "layer": "synthetic_primary_conductor",
+      "rows": 416,
+      "crs": "EPSG:2236",
+      "status": "PASS",
+      "checks": [
+        {
+          "check": "row_count_vs_source",
+          "status": "SKIP",
+          "rows": 416,
+          "source_count": null,
+          "note": "no source count supplied (source exposes none, or not queried offline)"
+        },
+        {
+          "check": "empty_geometry",
+          "status": "PASS",
+          "missing": 0,
+          "empty": 0,
+          "threshold": 0
+        },
+        {
+          "check": "invalid_geometry",
+          "status": "PASS",
+          "invalid": 0,
+          "threshold": 0
+        },
+        {
+          "check": "crs",
+          "status": "PASS",
+          "crs": "EPSG:2236"
+        },
+        {
+          "check": "duplicate_ids",
+          "status": "SKIP",
+          "note": "no id field configured"
+        },
+        {
+          "check": "key_field_null_rate",
+          "status": "SKIP",
+          "threshold": 0.0,
+          "fields": {}
+        }
+      ]
+    },
+    {
+      "layer": "synthetic_fuses",
+      "rows": 82,
+      "crs": "EPSG:2236",
+      "status": "PASS",
+      "checks": [
+        {
+          "check": "row_count_vs_source",
+          "status": "SKIP",
+          "rows": 82,
+          "source_count": null,
+          "note": "no source count supplied (source exposes none, or not queried offline)"
+        },
+        {
+          "check": "empty_geometry",
+          "status": "PASS",
+          "missing": 0,
+          "empty": 0,
+          "threshold": 0
+        },
+        {
+          "check": "invalid_geometry",
+          "status": "PASS",
+          "invalid": 0,
+          "threshold": 0
+        },
+        {
+          "check": "crs",
+          "status": "PASS",
+          "crs": "EPSG:2236"
+        },
+        {
+          "check": "duplicate_ids",
+          "status": "SKIP",
+          "note": "no id field configured"
+        },
+        {
+          "check": "key_field_null_rate",
+          "status": "SKIP",
+          "threshold": 0.0,
+          "fields": {}
+        }
+      ]
+    },
+    {
+      "layer": "synthetic_transformers",
+      "rows": 629,
+      "crs": "EPSG:2236",
+      "status": "PASS",
+      "checks": [
+        {
+          "check": "row_count_vs_source",
+          "status": "SKIP",
+          "rows": 629,
+          "source_count": null,
+          "note": "no source count supplied (source exposes none, or not queried offline)"
+        },
+        {
+          "check": "empty_geometry",
+          "status": "PASS",
+          "missing": 0,
+          "empty": 0,
+          "threshold": 0
+        },
+        {
+          "check": "invalid_geometry",
+          "status": "PASS",
+          "invalid": 0,
+          "threshold": 0
+        },
+        {
+          "check": "crs",
+          "status": "PASS",
+          "crs": "EPSG:2236"
+        },
+        {
+          "check": "duplicate_ids",
+          "status": "SKIP",
+          "note": "no id field configured"
+        },
+        {
+          "check": "key_field_null_rate",
+          "status": "SKIP",
+          "threshold": 0.0,
+          "fields": {}
+        }
+      ]
+    },
+    {
+      "layer": "synthetic_service_drops",
+      "rows": 2789,
+      "crs": "EPSG:2236",
+      "status": "PASS",
+      "checks": [
+        {
+          "check": "row_count_vs_source",
+          "status": "SKIP",
+          "rows": 2789,
+          "source_count": null,
+          "note": "no source count supplied (source exposes none, or not queried offline)"
+        },
+        {
+          "check": "empty_geometry",
+          "status": "PASS",
+          "missing": 0,
+          "empty": 0,
+          "threshold": 0
+        },
+        {
+          "check": "invalid_geometry",
+          "status": "PASS",
+          "invalid": 0,
+          "threshold": 0
+        },
+        {
+          "check": "crs",
+          "status": "PASS",
+          "crs": "EPSG:2236"
+        },
+        {
+          "check": "duplicate_ids",
+          "status": "SKIP",
+          "note": "no id field configured"
+        },
+        {
+          "check": "key_field_null_rate",
+          "status": "SKIP",
+          "threshold": 0.0,
+          "fields": {}
+        }
+      ]
+    },
+    {
+      "layer": "synthetic_sewer_mains",
+      "rows": 611,
+      "crs": "EPSG:2236",
+      "status": "PASS",
+      "checks": [
+        {
+          "check": "row_count_vs_source",
+          "status": "SKIP",
+          "rows": 611,
+          "source_count": null,
+          "note": "no source count supplied (source exposes none, or not queried offline)"
+        },
+        {
+          "check": "empty_geometry",
+          "status": "PASS",
+          "missing": 0,
+          "empty": 0,
+          "threshold": 0
+        },
+        {
+          "check": "invalid_geometry",
+          "status": "PASS",
+          "invalid": 0,
+          "threshold": 0
+        },
+        {
+          "check": "crs",
+          "status": "PASS",
+          "crs": "EPSG:2236"
+        },
+        {
+          "check": "duplicate_ids",
+          "status": "SKIP",
+          "note": "no id field configured"
+        },
+        {
+          "check": "key_field_null_rate",
+          "status": "SKIP",
+          "threshold": 0.0,
+          "fields": {}
+        }
+      ]
+    },
+    {
+      "layer": "synthetic_sewer_manholes",
+      "rows": 616,
+      "crs": "EPSG:2236",
+      "status": "PASS",
+      "checks": [
+        {
+          "check": "row_count_vs_source",
+          "status": "SKIP",
+          "rows": 616,
+          "source_count": null,
+          "note": "no source count supplied (source exposes none, or not queried offline)"
+        },
+        {
+          "check": "empty_geometry",
+          "status": "PASS",
+          "missing": 0,
+          "empty": 0,
+          "threshold": 0
+        },
+        {
+          "check": "invalid_geometry",
+          "status": "PASS",
+          "invalid": 0,
+          "threshold": 0
+        },
+        {
+          "check": "crs",
+          "status": "PASS",
+          "crs": "EPSG:2236"
+        },
+        {
+          "check": "duplicate_ids",
+          "status": "SKIP",
+          "note": "no id field configured"
+        },
+        {
+          "check": "key_field_null_rate",
+          "status": "SKIP",
+          "threshold": 0.0,
+          "fields": {}
+        }
+      ]
+    },
+    {
+      "layer": "synthetic_lift_stations",
+      "rows": 3,
+      "crs": "EPSG:2236",
+      "status": "PASS",
+      "checks": [
+        {
+          "check": "row_count_vs_source",
+          "status": "SKIP",
+          "rows": 3,
+          "source_count": null,
+          "note": "no source count supplied (source exposes none, or not queried offline)"
+        },
+        {
+          "check": "empty_geometry",
+          "status": "PASS",
+          "missing": 0,
+          "empty": 0,
+          "threshold": 0
+        },
+        {
+          "check": "invalid_geometry",
+          "status": "PASS",
+          "invalid": 0,
+          "threshold": 0
+        },
+        {
+          "check": "crs",
+          "status": "PASS",
+          "crs": "EPSG:2236"
+        },
+        {
+          "check": "duplicate_ids",
+          "status": "SKIP",
+          "note": "no id field configured"
+        },
+        {
+          "check": "key_field_null_rate",
+          "status": "SKIP",
+          "threshold": 0.0,
+          "fields": {}
+        }
+      ]
+    },
+    {
+      "layer": "synthetic_sewer_laterals",
+      "rows": 2789,
+      "crs": "EPSG:2236",
+      "status": "PASS",
+      "checks": [
+        {
+          "check": "row_count_vs_source",
+          "status": "SKIP",
+          "rows": 2789,
+          "source_count": null,
+          "note": "no source count supplied (source exposes none, or not queried offline)"
+        },
+        {
+          "check": "empty_geometry",
+          "status": "PASS",
+          "missing": 0,
+          "empty": 0,
+          "threshold": 0
+        },
+        {
+          "check": "invalid_geometry",
+          "status": "PASS",
+          "invalid": 0,
+          "threshold": 0
+        },
+        {
+          "check": "crs",
+          "status": "PASS",
+          "crs": "EPSG:2236"
+        },
+        {
+          "check": "duplicate_ids",
+          "status": "SKIP",
+          "note": "no id field configured"
+        },
+        {
+          "check": "key_field_null_rate",
+          "status": "SKIP",
+          "threshold": 0.0,
+          "fields": {}
+        }
+      ]
+    },
+    {
+      "layer": "real_septic_phaseout_coj",
+      "rows": 4,
+      "crs": "EPSG:2236",
+      "status": "PASS",
+      "checks": [
+        {
+          "check": "row_count_vs_source",
+          "status": "SKIP",
+          "rows": 4,
+          "source_count": null,
+          "note": "no source count supplied (source exposes none, or not queried offline)"
+        },
+        {
+          "check": "empty_geometry",
+          "status": "PASS",
+          "missing": 0,
+          "empty": 0,
+          "threshold": 0
+        },
+        {
+          "check": "invalid_geometry",
+          "status": "PASS",
+          "invalid": 0,
+          "threshold": 0
+        },
+        {
+          "check": "crs",
+          "status": "PASS",
+          "crs": "EPSG:2236"
+        },
+        {
+          "check": "duplicate_ids",
+          "status": "SKIP",
+          "note": "no id field configured"
+        },
+        {
+          "check": "key_field_null_rate",
+          "status": "SKIP",
+          "threshold": 0.0,
+          "fields": {}
+        }
+      ]
+    },
+    {
+      "layer": "real_osm_power_lines",
+      "rows": 1712,
+      "crs": "EPSG:2236",
+      "status": "PASS",
+      "checks": [
+        {
+          "check": "row_count_vs_source",
+          "status": "SKIP",
+          "rows": 1712,
+          "source_count": null,
+          "note": "no source count supplied (source exposes none, or not queried offline)"
+        },
+        {
+          "check": "empty_geometry",
+          "status": "PASS",
+          "missing": 0,
+          "empty": 0,
+          "threshold": 0
+        },
+        {
+          "check": "invalid_geometry",
+          "status": "PASS",
+          "invalid": 0,
+          "threshold": 0
+        },
+        {
+          "check": "crs",
+          "status": "PASS",
+          "crs": "EPSG:2236"
+        },
+        {
+          "check": "duplicate_ids",
+          "status": "SKIP",
+          "note": "no id field configured"
+        },
+        {
+          "check": "key_field_null_rate",
+          "status": "SKIP",
+          "threshold": 0.0,
+          "fields": {}
+        }
+      ]
+    },
+    {
+      "layer": "real_osm_power_substations",
+      "rows": 117,
+      "crs": "EPSG:2236",
+      "status": "PASS",
+      "checks": [
+        {
+          "check": "row_count_vs_source",
+          "status": "SKIP",
+          "rows": 117,
+          "source_count": null,
+          "note": "no source count supplied (source exposes none, or not queried offline)"
+        },
+        {
+          "check": "empty_geometry",
+          "status": "PASS",
+          "missing": 0,
+          "empty": 0,
+          "threshold": 0
+        },
+        {
+          "check": "invalid_geometry",
+          "status": "PASS",
+          "invalid": 0,
+          "threshold": 0
+        },
+        {
+          "check": "crs",
+          "status": "PASS",
+          "crs": "EPSG:2236"
+        },
+        {
+          "check": "duplicate_ids",
+          "status": "SKIP",
+          "note": "no id field configured"
+        },
+        {
+          "check": "key_field_null_rate",
+          "status": "SKIP",
+          "threshold": 0.0,
+          "fields": {}
+        }
+      ]
+    },
+    {
+      "layer": "real_osm_power_poles_towers",
+      "rows": 11122,
+      "crs": "EPSG:2236",
+      "status": "PASS",
+      "checks": [
+        {
+          "check": "row_count_vs_source",
+          "status": "SKIP",
+          "rows": 11122,
+          "source_count": null,
+          "note": "no source count supplied (source exposes none, or not queried offline)"
+        },
+        {
+          "check": "empty_geometry",
+          "status": "PASS",
+          "missing": 0,
+          "empty": 0,
+          "threshold": 0
+        },
+        {
+          "check": "invalid_geometry",
+          "status": "PASS",
+          "invalid": 0,
+          "threshold": 0
+        },
+        {
+          "check": "crs",
+          "status": "PASS",
+          "crs": "EPSG:2236"
+        },
+        {
+          "check": "duplicate_ids",
+          "status": "SKIP",
+          "note": "no id field configured"
+        },
+        {
+          "check": "key_field_null_rate",
+          "status": "SKIP",
+          "threshold": 0.0,
+          "fields": {}
+        }
+      ]
+    },
+    {
+      "layer": "trace_valve_isolation_mains",
+      "rows": 5,
+      "crs": "EPSG:2236",
+      "status": "PASS",
+      "checks": [
+        {
+          "check": "row_count_vs_source",
+          "status": "SKIP",
+          "rows": 5,
+          "source_count": null,
+          "note": "no source count supplied (source exposes none, or not queried offline)"
+        },
+        {
+          "check": "empty_geometry",
+          "status": "PASS",
+          "missing": 0,
+          "empty": 0,
+          "threshold": 0
+        },
+        {
+          "check": "invalid_geometry",
+          "status": "PASS",
+          "invalid": 0,
+          "threshold": 0
+        },
+        {
+          "check": "crs",
+          "status": "PASS",
+          "crs": "EPSG:2236"
+        },
+        {
+          "check": "duplicate_ids",
+          "status": "SKIP",
+          "note": "no id field configured"
+        },
+        {
+          "check": "key_field_null_rate",
+          "status": "SKIP",
+          "threshold": 0.0,
+          "fields": {}
+        }
+      ]
+    },
+    {
+      "layer": "analysis_hydrant_coverage",
+      "rows": 2789,
+      "crs": "EPSG:2236",
+      "status": "PASS",
+      "checks": [
+        {
+          "check": "row_count_vs_source",
+          "status": "SKIP",
+          "rows": 2789,
+          "source_count": null,
+          "note": "no source count supplied (source exposes none, or not queried offline)"
+        },
+        {
+          "check": "empty_geometry",
+          "status": "PASS",
+          "missing": 0,
+          "empty": 0,
+          "threshold": 0
+        },
+        {
+          "check": "invalid_geometry",
+          "status": "PASS",
+          "invalid": 0,
+          "threshold": 0
+        },
+        {
+          "check": "crs",
+          "status": "PASS",
+          "crs": "EPSG:2236"
+        },
+        {
+          "check": "duplicate_ids",
+          "status": "SKIP",
+          "note": "no id field configured"
+        },
+        {
+          "check": "key_field_null_rate",
+          "status": "SKIP",
+          "threshold": 0.0,
+          "fields": {}
+        }
+      ]
+    },
+    {
+      "layer": "analysis_hydrant_coverage_northside",
+      "rows": 2671,
+      "crs": "EPSG:2236",
+      "status": "PASS",
+      "checks": [
+        {
+          "check": "row_count_vs_source",
+          "status": "SKIP",
+          "rows": 2671,
+          "source_count": null,
+          "note": "no source count supplied (source exposes none, or not queried offline)"
+        },
+        {
+          "check": "empty_geometry",
+          "status": "PASS",
+          "missing": 0,
+          "empty": 0,
+          "threshold": 0
+        },
+        {
+          "check": "invalid_geometry",
+          "status": "PASS",
+          "invalid": 0,
+          "threshold": 0
+        },
+        {
+          "check": "crs",
+          "status": "PASS",
+          "crs": "EPSG:2236"
+        },
+        {
+          "check": "duplicate_ids",
+          "status": "SKIP",
+          "note": "no id field configured"
+        },
+        {
+          "check": "key_field_null_rate",
+          "status": "SKIP",
+          "threshold": 0.0,
+          "fields": {}
+        }
+      ]
+    },
+    {
+      "layer": "trace_sewer_downstream",
+      "rows": 32,
+      "crs": "EPSG:2236",
+      "status": "PASS",
+      "checks": [
+        {
+          "check": "row_count_vs_source",
+          "status": "SKIP",
+          "rows": 32,
+          "source_count": null,
+          "note": "no source count supplied (source exposes none, or not queried offline)"
+        },
+        {
+          "check": "empty_geometry",
+          "status": "PASS",
+          "missing": 0,
+          "empty": 0,
+          "threshold": 0
+        },
+        {
+          "check": "invalid_geometry",
+          "status": "PASS",
+          "invalid": 0,
+          "threshold": 0
+        },
+        {
+          "check": "crs",
+          "status": "PASS",
+          "crs": "EPSG:2236"
+        },
+        {
+          "check": "duplicate_ids",
+          "status": "SKIP",
+          "note": "no id field configured"
+        },
+        {
+          "check": "key_field_null_rate",
+          "status": "SKIP",
+          "threshold": 0.0,
+          "fields": {}
+        }
+      ]
+    },
+    {
+      "layer": "trace_outage_parcels",
+      "rows": 139,
+      "crs": "EPSG:2236",
+      "status": "PASS",
+      "checks": [
+        {
+          "check": "row_count_vs_source",
+          "status": "SKIP",
+          "rows": 139,
+          "source_count": null,
+          "note": "no source count supplied (source exposes none, or not queried offline)"
+        },
+        {
+          "check": "empty_geometry",
+          "status": "PASS",
+          "missing": 0,
+          "empty": 0,
+          "threshold": 0
+        },
+        {
+          "check": "invalid_geometry",
+          "status": "PASS",
+          "invalid": 0,
+          "threshold": 0
+        },
+        {
+          "check": "crs",
+          "status": "PASS",
+          "crs": "EPSG:2236"
+        },
+        {
+          "check": "duplicate_ids",
+          "status": "SKIP",
+          "note": "no id field configured"
+        },
+        {
+          "check": "key_field_null_rate",
+          "status": "SKIP",
+          "threshold": 0.0,
+          "fields": {}
+        }
+      ]
+    },
+    {
+      "layer": "trace_isolation_parcels",
+      "rows": 5,
+      "crs": "EPSG:2236",
+      "status": "PASS",
+      "checks": [
+        {
+          "check": "row_count_vs_source",
+          "status": "SKIP",
+          "rows": 5,
+          "source_count": null,
+          "note": "no source count supplied (source exposes none, or not queried offline)"
+        },
+        {
+          "check": "empty_geometry",
+          "status": "PASS",
+          "missing": 0,
+          "empty": 0,
+          "threshold": 0
+        },
+        {
+          "check": "invalid_geometry",
+          "status": "PASS",
+          "invalid": 0,
+          "threshold": 0
+        },
+        {
+          "check": "crs",
+          "status": "PASS",
+          "crs": "EPSG:2236"
+        },
+        {
+          "check": "duplicate_ids",
+          "status": "SKIP",
+          "note": "no id field configured"
+        },
+        {
+          "check": "key_field_null_rate",
+          "status": "SKIP",
+          "threshold": 0.0,
+          "fields": {}
+        }
+      ]
+    }
+  ]
+}

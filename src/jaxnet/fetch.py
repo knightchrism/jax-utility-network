@@ -1,10 +1,11 @@
 """Fetch REAL public data for the study area into data/raw/ (gitignored)."""
 import json, sys
-import requests
 import geopandas as gpd
 from .config import RAW, AOI, AOI2, DUVAL, SOURCES, OVERPASS
+from .polite import PoliteClient, Blocked, estimate
 
-UA = {"User-Agent": "geoknight-gis-jax-utility-demo/0.1 (portfolio)"}
+# Honest UA, robots.txt, >= 20 s between requests, stop at the first error/block (no retries).
+CLIENT = PoliteClient()
 
 
 def env(b):
@@ -13,8 +14,7 @@ def env(b):
 
 
 def count(url, bbox, where="1=1"):
-    r = requests.get(f"{url}/query", params={**env(bbox), "where": where, "returnCountOnly": "true", "f": "json"}, headers=UA, timeout=60)
-    return r.json().get("count")
+    return CLIENT.get_json(f"{url}/query", params={**env(bbox), "where": where, "returnCountOnly": "true", "f": "json"}).get("count")
 
 
 def arcgis(url, bbox, where="1=1", fields="*", page=1000):
@@ -22,7 +22,7 @@ def arcgis(url, bbox, where="1=1", fields="*", page=1000):
     while True:
         p = {**env(bbox), "where": where, "outFields": fields, "outSR": 4326, "f": "geojson",
              "resultOffset": off, "resultRecordCount": page}
-        js = requests.get(f"{url}/query", params=p, headers=UA, timeout=120).json()
+        js = CLIENT.get_json(f"{url}/query", params=p)
         fs = js.get("features", [])
         feats += fs
         if len(fs) < page:
@@ -32,17 +32,18 @@ def arcgis(url, bbox, where="1=1", fields="*", page=1000):
 
 
 def overpass(q):
-    for ep in OVERPASS:
-        try:
-            r = requests.post(ep, data={"data": q}, headers=UA, timeout=90)
-            if r.ok:
-                return r.json()
-        except Exception as e:  # noqa
-            print("  overpass fail", ep, e)
-    return None
+    # One endpoint only; no failover to other mirrors (stop at the first error/block).
+    try:
+        return CLIENT.request("POST", OVERPASS[0], data={"data": q}, timeout=90).json()
+    except (Blocked, ValueError) as e:
+        print("  overpass stopped:", e)
+        return None
 
 
 def main():
+    # Pre-run estimate (no network): ~20 count/page requests for the AOI layers, 1 DEM, 1 Overpass,
+    # robots.txt per host, plus paging. Warns if > 720 requests (> 4 h at 20 s each).
+    estimate(40, label="jaxnet fetch (AOI-scoped; paging may add requests)")
     RAW.mkdir(parents=True, exist_ok=True)
     counts = {}
     jobs = {
@@ -83,9 +84,7 @@ def fetch_dem(bbox, out, size=(900, 700)):
     """USGS 3DEP bare-earth DEM (public domain) as GeoTIFF, EPSG:4326, metres."""
     p = {"bbox": ",".join(map(str, bbox)), "bboxSR": 4326, "imageSR": 4326, "size": f"{size[0]},{size[1]}",
          "format": "tiff", "pixelType": "F32", "interpolation": "RSP_BilinearInterpolation", "f": "image"}
-    r = requests.get(SOURCES["dem_3dep"] + "/exportImage", params=p, headers=UA, timeout=180)
-    r.raise_for_status()
-    out.write_bytes(r.content)
+    out.write_bytes(CLIENT.get_bytes(SOURCES["dem_3dep"] + "/exportImage", params=p, timeout=180))
 
 
 def fetch_phase2():
