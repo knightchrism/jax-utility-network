@@ -1,25 +1,19 @@
-MIT License
+Copyright (c) 2026 GeoKnight GIS. All rights reserved.
 
-Copyright (c) 2026 Christopher Knight (GeoKnight GIS)
+This software and its source code, documentation and associated files are
+proprietary to GeoKnight GIS. No part of it may be copied, modified, merged,
+published, distributed, sublicensed, sold or otherwise reused, in whole or in
+part, without the prior written permission of GeoKnight GIS. Viewing this
+repository or its public demo does not grant any license.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+Contact: info@geoknightgis.com
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+Third-party notices
+-------------------
+This license covers only GeoKnight GIS's own work. Bundled or referenced
+third-party libraries, fonts and data remain under their own licenses and
+terms, which are not changed by this notice:
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-Note: this license covers the code only. Third-party data keeps its own terms
-(see DATA_SOURCES.md), including OpenStreetMap data (c) OpenStreetMap
-contributors, ODbL.
+- Python dependencies keep their own licenses, including certifi (MPL-2.0).
+- OpenStreetMap data (Geofabrik Florida extract and Overpass) is (c) OpenStreetMap contributors, available under the Open Database License (ODbL 1.0). Any OSM-derived layer distributed with this project remains under ODbL.
+- US Census TIGER, USGS 3DEP and HIFLD Open data are public domain or open data; City of Jacksonville / JEA and FDOR data keep their publishers' terms. See DATA_SOURCES.md.

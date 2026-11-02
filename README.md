@@ -82,3 +82,7 @@ Hydrant distance is straight-line from the parcel's interior point. Large undeve
 
 ---
 GeoKnight GIS · Christopher Knight
+
+## License
+
+Copyright (c) 2026 GeoKnight GIS. All rights reserved. No copying or reuse without written permission; see [LICENSE](LICENSE). Third-party libraries and data keep their own licenses and terms (listed in [LICENSE](LICENSE)).
