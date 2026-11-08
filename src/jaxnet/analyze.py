@@ -284,6 +284,60 @@ def png(streets, parcels, mains, valves, hyd, prim, xf, sub, iso, out, gaps, X):
     plt.tight_layout(); fig.savefig(OUT / "jax_utility_network_map.png", dpi=110, facecolor=fig.get_facecolor()); plt.close(fig)
 
 
+# Map chrome for web/index.html and docs/map.html. The synthetic-network sentence stays verbatim.
+MAP_CHROME = """<style>
+html,body{height:100%;margin:0;padding:0}
+body{display:flex;flex-direction:column;overflow:hidden;background:#0b1f3a}
+.gk-top{flex:0 0 auto;max-height:42vh;overflow:auto;background:#0b1f3a;color:#dbe4f3;border-bottom:3px solid #c9a227;font:14px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;padding:8px 14px 10px;z-index:10000}
+.gk-row{display:flex;align-items:center;gap:10px 16px;flex-wrap:wrap}
+.gk-brand{display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;font-weight:700;font-size:16px}
+.gk-brand b{color:#e6c35c}
+.gk-mark{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:#c9a227;color:#0b1f3a;font-size:11px;font-weight:800;flex:none}
+.gk-top h1{margin:0;font:600 15px/1.3 system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:#fff;flex:1 1 14rem}
+.gk-mail{color:#e6c35c;font-weight:700;font-size:14px;text-decoration:none}
+.gk-mail:hover,.gk-brand:hover{color:#fff}
+.gk-top a:focus-visible{outline:3px solid #e6c35c;outline-offset:2px}
+.gk-note{margin:6px 0 0;max-width:90ch;color:#dbe4f3;font-size:13px;font-weight:400}
+.gk-note b{color:#fff}
+.folium-map{flex:1 1 0px!important;min-height:0!important;height:auto!important;width:100%!important;position:relative!important}
+.gk-home{position:fixed;left:12px;bottom:12px;z-index:10000;width:44px;height:44px;border-radius:50%;background:#0b1f3a;border:1.5px solid #c9a227;display:grid;place-items:center;box-shadow:0 2px 8px rgba(0,0,0,.45);box-sizing:border-box;text-decoration:none}
+.gk-home:hover,.gk-home:focus{background:#13305a;outline:none}
+.gk-home:focus-visible{box-shadow:0 0 0 3px rgba(201,162,39,.6)}
+.gk-home svg{display:block}
+.leaflet-bottom.leaflet-left,.maplibregl-ctrl-bottom-left,.mapboxgl-ctrl-bottom-left,.cesium-viewer-bottom,.ol-scale-line{margin-bottom:60px!important}
+.maplibregl-ctrl-bottom-right .maplibregl-ctrl-attrib.maplibregl-compact-show,.leaflet-bottom.leaflet-right .leaflet-control-attribution{max-width:calc(100vw - 80px)!important;box-sizing:border-box}
+@media (max-width:640px){
+.gk-top{padding:8px 10px}
+.gk-brand{font-size:15px}
+.gk-top h1{flex-basis:100%;font-size:14px}
+.gk-note{font-size:12.5px}
+}
+</style>
+<header class="gk-top">
+<div class="gk-row">
+<a class="gk-brand" href="https://geoknightgis.com/"><span class="gk-mark" aria-hidden="true">GK</span><span>GeoKnight <b>GIS</b></span></a>
+<h1>Jacksonville Utility Network Demo</h1>
+<a class="gk-mail" href="mailto:info@geoknightgis.com">info@geoknightgis.com</a>
+</div>
+<p class="gk-note">Water, sewer, and electric distribution networks are <b>SYNTHETIC</b>. Streets (TIGER), parcels (FDOR), hydrants (COJ/JEA), transmission (HIFLD), OSM power, septic phase-out areas, and DEM (3DEP) are real.</p>
+</header>
+<a class="gk-home" href="https://geoknightgis.com/" title="Home" aria-label="Home"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false"><path d="M3 11.5 12 4l9 7.5M5.5 10v10h4.5v-5.5h4V20h4.5V10" fill="none" stroke="#c9a227" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg></a>
+"""
+
+
+def _brand_saved_map(path):
+    """Match the checked-in map pages: language and title around Folium's shell."""
+    text = path.read_text()
+    text = text.replace("<html>", '<html lang="en">', 1)
+    if "<title>" not in text:
+        text = text.replace(
+            "<head>",
+            "<head>\n    <title>GeoKnight GIS · Jacksonville Utility Network</title>",
+            1,
+        )
+    path.write_text(text)
+
+
 def leaflet(streets, parcels, mains, valves, hyd, prim, fuses, xf, sub, tx, iso, out, gaps, X):
     w = lambda g: g.to_crs(4326)  # noqa
     c = w(parcels).union_all().centroid
@@ -324,10 +378,9 @@ def leaflet(streets, parcels, mains, valves, hyd, prim, fuses, xf, sub, tx, iso,
     add(X["gaps2"], "Northside: parcels > 500 ft from hydrant", {"color": "#f43f5e", "weight": .5, "fillOpacity": .5}, tip=["PARCEL_ID", "PHY_ADDR1", "dist_hydrant_ft"])
     add(X["h2"], "Northside: real hydrants", {"color": "#fde047", "radius": 3}, tip=["Hydrant_ID", "Facility_Owner"])
     folium.LayerControl(collapsed=False).add_to(m)
-    m.get_root().html.add_child(folium.Element(
-        "<div style='position:fixed;top:10px;left:50px;z-index:9999;background:#0b1220cc;color:#e2e8f0;padding:8px 14px;border-radius:6px;font-family:sans-serif'>"
-        "<b style='color:#38bdf8'>GeoKnight GIS</b> &middot; Jacksonville Utility Network Demo<br><small>Water, sewer, and electric distribution networks are <b>SYNTHETIC</b>. Streets (TIGER), parcels (FDOR), hydrants (COJ/JEA), transmission (HIFLD), OSM power, septic phase-out areas, and DEM (3DEP) are real.</small></div>"))
+    m.get_root().html.add_child(folium.Element(MAP_CHROME))
     m.save(WEB / "index.html")
+    _brand_saved_map(WEB / "index.html")
 
 
 if __name__ == "__main__":
