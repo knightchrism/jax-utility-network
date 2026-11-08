@@ -8,21 +8,24 @@
 <title>GeoKnight GIS · Jacksonville Utility Network</title>
 <link rel="icon" href="https://geoknightgis.com/favicon.svg" type="image/svg+xml">
 <style>
-:root{--navy:#0b1f3a;--navy2:#132d52;--gold:#c9a227;--gold2:#e6c35c;--ink:#1b2433;--mu:#5b6678;--line:#e3e7ee;--bg:#fff;--alt:#f5f7fa;--r:14px}
+@font-face{font-family:"Inter";src:url(https://geoknightgis.com/assets/fonts/inter-latin.woff2) format("woff2");font-weight:400 700;font-style:normal;font-display:swap}
+@font-face{font-family:"Plus Jakarta Sans";src:url(https://geoknightgis.com/assets/fonts/jakarta-latin.woff2) format("woff2");font-weight:700 800;font-style:normal;font-display:swap}
+:root{--navy:#0b1f3a;--navy2:#132d52;--gold:#d4a72c;--gold2:#f0c75a;--ink:#1b2433;--mu:#5b6678;--line:#e3e7ee;--bg:#fff;--alt:#f5f7fa;--r:16px;--ui:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;--display:"Plus Jakarta Sans","Inter",system-ui,sans-serif}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
-body{margin:0;font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:var(--bg);overflow-x:hidden}
+body{margin:0;font:16px/1.6 var(--ui);color:var(--ink);background:var(--bg);overflow-x:hidden;-webkit-font-smoothing:antialiased}
 img{max-width:100%;height:auto;display:block}
 a{color:var(--navy2)}
 a:hover{color:var(--gold)}
 a:focus-visible,.btn:focus-visible,.navtoggle:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
-h1{line-height:1.15;color:var(--navy);margin:0 0 .4em;font-size:clamp(2rem,5vw,3.2rem);letter-spacing:-.02em}
+h1,.brand,.n{font-family:var(--display)}
+h1{line-height:1.05;color:var(--navy);margin:0 0 .4em;font-size:clamp(2.25rem,1.4rem + 3.4vw,3.75rem);font-weight:800;letter-spacing:-.03em}
 .wrap{max-width:1120px;margin:0 auto;padding:0 20px}
 .skip{position:absolute;left:-999px}
 .skip:focus{left:8px;top:8px;z-index:9;background:var(--gold);color:var(--navy);padding:8px;text-decoration:none}
 .nav{position:sticky;top:0;z-index:5;background:var(--navy);border-bottom:3px solid var(--gold)}
-.navin{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:64px;flex-wrap:wrap}
-.brand{display:flex;align-items:center;gap:10px;color:#fff;text-decoration:none;font-weight:700;font-size:1.1rem}
+.navin{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:72px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;color:#fff;text-decoration:none;font-weight:700;font-size:1.1rem;letter-spacing:-.02em}
 .brand b{color:var(--gold2)}
 .brand:hover{color:#fff}
 .mark{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--gold);color:var(--navy);font-size:.8rem;font-weight:800;flex:none}
@@ -35,10 +38,10 @@ h1{line-height:1.15;color:var(--navy);margin:0 0 .4em;font-size:clamp(2rem,5vw,3
 .pagehead .lead{color:#cdd7e6;font-size:1.15rem;max-width:62ch;margin:0}
 .eyebrow{text-transform:uppercase;letter-spacing:.14em;font-size:.8rem;font-weight:700;color:var(--gold2);margin:0 0 .6em}
 .cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:1.5em}
-.btn{display:inline-block;background:var(--gold);color:var(--navy);font-weight:700;text-decoration:none;padding:.75em 1.3em;border-radius:999px;border:2px solid var(--gold)}
+.btn{display:inline-block;background:var(--gold);color:var(--navy);font-family:var(--ui);font-weight:700;line-height:1;text-decoration:none;padding:16px 24px;border-radius:999px;border:2px solid var(--gold);letter-spacing:.005em}
 .btn:hover{background:var(--gold2);border-color:var(--gold2);color:var(--navy)}
 .btn-ghost{background:transparent;color:#fff;border-color:#fff}
-.btn-ghost:hover{background:rgba(201,162,39,.15);border-color:var(--gold2);color:#fff}
+.btn-ghost:hover{background:rgba(212,167,44,.15);border-color:var(--gold2);color:#fff}
 .band{padding:40px 0 64px}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:16px;margin:0 0 28px}
 .card{background:#fff;border:1px solid var(--line);border-top:3px solid var(--gold);border-radius:var(--r);padding:20px;box-shadow:0 1px 2px rgba(11,31,58,.05)}
